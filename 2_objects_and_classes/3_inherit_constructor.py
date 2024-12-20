@@ -39,6 +39,17 @@ Colored = {
     "_new": colored_new
 }
 
+def blue_new():
+    return make(Colored, "blue") | {
+        "_class": Blue
+    }
+
+Blue = {
+    "_classname": "Blue",
+    "_parent": (Colored, ),
+    "_new": blue_new
+}
+
 
 # [make]
 def make(cls, *args):
@@ -52,8 +63,8 @@ def square_area(thing):
     return thing["side"] ** 2
 
 # [square]
-def square_new(name, side, color):
-    return make(Shape, name) | make(Colored, color) | {
+def square_new(name, side):
+    return make(Shape, name) | make(Blue) | {
         "side": side,
         "_class": Square
     }
@@ -62,7 +73,7 @@ Square = {
     "perimeter": square_perimeter,
     "area": square_area,
     "_classname": "Square",
-    "_parent": (Shape, Colored),
+    "_parent": (Shape, Blue),
     "_new": square_new
 }
 # [/square]
@@ -73,8 +84,8 @@ def circle_perimeter(thing):
 def circle_area(thing):
     return math.pi * thing["radius"] ** 2
 
-def circle_new(name, radius, color):
-    return make(Shape, name) | make(Colored, color) | {
+def circle_new(name, radius):
+    return make(Shape, name) | make(Blue) | {
         "radius": radius,
         "_class": Circle
     }
@@ -83,7 +94,7 @@ Circle = {
     "perimeter": circle_perimeter,
     "area": circle_area,
     "_classname": "Circle",
-    "_parent": (Shape, Colored),
+    "_parent": (Shape, Blue),
     "_new": circle_new
 }
 
@@ -103,12 +114,31 @@ def call(thing, method_name, *args, **kwargs):
     method = find(thing["_class"], method_name)
     return method(thing, *args, **kwargs)
 
+def type(thing):
+    return thing["_class"]["_classname"]
+
+def isinstance(thing, cls):
+    def parentisinstance(thing, cls):
+        if thing["_classname"] == cls["_classname"]:
+            return True
+        return any(parentisinstance(p, cls) for p in thing["_parent"])
+
+    if cls["_classname"] == thing["_class"]["_classname"]:
+        return True
+    return parentisinstance(thing["_class"], cls)
+    
+
 # [call]
-examples = [make(Square, "sq", 3, "blue"), make(Circle, "ci", 2, "red")]
+examples = [make(Square, "sq", 3), make(Circle, "ci", 2)]
 for ex in examples:
     n = ex["name"]
     area = call(ex, "area")
     d = call(ex, "density", weight=5)
     color = call(ex, "getcolor")
     print(f"{n}: density: {d:.2f}, color: {color}")
+    print(f"Type: {type(ex)}")
+    print(f"Is instance of Square: {isinstance(ex, Square)}")
+    print(f"Is instance of Blue: {isinstance(ex, Blue)}")
+    print(f"Is instance of Colored: {isinstance(ex, Colored)}")
+    print()
 # [/call]
