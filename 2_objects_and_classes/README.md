@@ -32,7 +32,7 @@ Now this seems complex. How should I do it? Maybe add two fields called `classme
 
 Python `type` method reports the most specific type of an object, while `isinstance` determines whether an object inherits from a type either directly or indirectly. Add your own versions of both to dictionary-based objects and classes.
 
-This seems more straightforward.
+This seems more straightforward. The only difference is that we have to check the class name differently for the instantiated class than for the inherited classes, otherwise it is simple.
 
 ## Task 5 - Using recursion
 
@@ -41,3 +41,6 @@ Modify the `find` function to be recursive -- this is already the case in the co
 ## Task 6 - Method caching
 
 _Our implementation searches for the implementation of a method every time that method is called. An alternative is to add a cache to each object to save the methods that have been looked up before. For example, each object could have a special key called _cache whose value is a dictionary. The keys in that dictionary are the names of methods that have been called in the past, and the values are the functions that were found to implement those methods. Add this feature to our dictionary-based objects. How much more complex does it make the code? How much extra storage space does it need compared to repeated lookup?_
+
+Let's add caching then! I will have to add a `_cache` field to each dictionary, and modify the call method, so it
+checks the cache first, calls the method from there, if it exists, otherwise searches and stores the result in cache.

@@ -14,7 +14,8 @@ Shape = {
     "density": shape_density,
     "_classname": "Shape",
     "_parent": tuple(),
-    "_new": shape_new
+    "_new": shape_new,
+    "_cache": dict()
 }
 # [/shape]
 
@@ -36,7 +37,8 @@ Colored = {
     "getcolor": getcolor,
     "_classname": "Colored",
     "_parent": tuple(),
-    "_new": colored_new
+    "_new": colored_new,
+    "_cache": dict()
 }
 
 def blue_new():
@@ -47,7 +49,8 @@ def blue_new():
 Blue = {
     "_classname": "Blue",
     "_parent": (Colored, ),
-    "_new": blue_new
+    "_new": blue_new,
+    "_cache": dict()
 }
 
 
@@ -74,7 +77,8 @@ Square = {
     "area": square_area,
     "_classname": "Square",
     "_parent": (Shape, Blue),
-    "_new": square_new
+    "_new": square_new,
+    "_cache": dict()
 }
 # [/square]
 
@@ -95,7 +99,8 @@ Circle = {
     "area": circle_area,
     "_classname": "Circle",
     "_parent": (Shape, Blue),
-    "_new": circle_new
+    "_new": circle_new,
+    "_cache": dict()
 }
 
 def find(cls, method_name):
@@ -111,8 +116,12 @@ def find(cls, method_name):
         return None
 
 def call(thing, method_name, *args, **kwargs):
-    method = find(thing["_class"], method_name)
-    return method(thing, *args, **kwargs)
+    if method_name in thing["_class"]["_cache"]:
+        return thing["_class"]["_cache"][method_name](thing, *args, **kwargs)
+    else:
+        method = find(thing["_class"], method_name)
+        thing["_class"]["_cache"][method_name] = method
+        return method(thing, *args, **kwargs)
 
 def type(thing):
     return thing["_class"]["_classname"]
@@ -141,4 +150,6 @@ for ex in examples:
     print(f"Is instance of Blue: {isinstance(ex, Blue)}")
     print(f"Is instance of Colored: {isinstance(ex, Colored)}")
     print()
+
+d = call(ex, "density", weight=5)
 # [/call]
