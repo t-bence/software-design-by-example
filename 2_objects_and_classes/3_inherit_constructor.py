@@ -13,10 +13,32 @@ def shape_new(name):
 Shape = {
     "density": shape_density,
     "_classname": "Shape",
-    "_parent": None,
+    "_parent": tuple(),
     "_new": shape_new
 }
 # [/shape]
+
+# here, I define a new dict called HasColor
+def colored_new(color):
+    return {
+        "color": color,
+        "_class": Colored
+    }
+
+def getcolor(thing):
+    return thing["color"]
+
+def shape_density_2(thing, weight):
+    return -1
+
+Colored = {
+    "density": shape_density_2,
+    "getcolor": getcolor,
+    "_classname": "Colored",
+    "_parent": tuple(),
+    "_new": colored_new
+}
+
 
 # [make]
 def make(cls, *args):
@@ -30,8 +52,8 @@ def square_area(thing):
     return thing["side"] ** 2
 
 # [square]
-def square_new(name, side):
-    return make(Shape, name) | {
+def square_new(name, side, color):
+    return make(Shape, name) | make(Colored, color) | {
         "side": side,
         "_class": Square
     }
@@ -40,7 +62,7 @@ Square = {
     "perimeter": square_perimeter,
     "area": square_area,
     "_classname": "Square",
-    "_parent": Shape,
+    "_parent": (Shape, Colored),
     "_new": square_new
 }
 # [/square]
@@ -51,8 +73,8 @@ def circle_perimeter(thing):
 def circle_area(thing):
     return math.pi * thing["radius"] ** 2
 
-def circle_new(name, radius):
-    return make(Shape, name) | {
+def circle_new(name, radius, color):
+    return make(Shape, name) | make(Colored, color) | {
         "radius": radius,
         "_class": Circle
     }
@@ -61,26 +83,32 @@ Circle = {
     "perimeter": circle_perimeter,
     "area": circle_area,
     "_classname": "Circle",
-    "_parent": Shape,
+    "_parent": (Shape, Colored),
     "_new": circle_new
 }
 
 def find(cls, method_name):
-    if cls is None:
-        raise NotImplementedError("method_name")
     if method_name in cls:
         return cls[method_name]
-    return find(cls["_parent"], method_name)
+    elif not cls["_parent"]:
+        return None
+    else:
+        methods = [find(p, method_name) for p in cls["_parent"]]
+        for m in methods:
+            if m is not None:
+                return m # return the first one found
+        return None
 
 def call(thing, method_name, *args, **kwargs):
     method = find(thing["_class"], method_name)
     return method(thing, *args, **kwargs)
 
 # [call]
-examples = [make(Square, "sq", 3), make(Circle, "ci", 2)]
+examples = [make(Square, "sq", 3, "blue"), make(Circle, "ci", 2, "red")]
 for ex in examples:
     n = ex["name"]
     area = call(ex, "area")
     d = call(ex, "density", weight=5)
-    print(f"{n}: density: {d:.2f}")
+    color = call(ex, "getcolor")
+    print(f"{n}: density: {d:.2f}, color: {color}")
 # [/call]
