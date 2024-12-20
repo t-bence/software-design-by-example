@@ -4,8 +4,10 @@ from hashlib import sha256
 def find_groups(filenames):
     groups = {}
     for fn in filenames:
-        data = open(fn, "rb").read()
-        hash_code = sha256(data).hexdigest()
+        hash = sha256()
+        for b in open(fn, "rb"):
+            hash.update(b)
+        hash_code = hash.hexdigest()
         if hash_code not in groups:
             groups[hash_code] = set()
         groups[hash_code].add(fn)

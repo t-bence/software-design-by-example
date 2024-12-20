@@ -8,3 +8,4 @@ With two bits, there are 4 possible values. The chance of not colliding is there
 
 _A streaming API delivers data one piece at a time rather than all at once. Read the documentation for the update method of hashing objects in Python’s hashing module and rewrite the duplicate finder from this chapter to use it._
 
+This was really simple.
