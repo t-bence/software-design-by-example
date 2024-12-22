@@ -16,11 +16,18 @@ Because `range(a, b)` goes only up to `b-1`.
 
 > Extend the regular expression matcher to support +, meaning “match one or more characters”.
 
+This is basically the same as `Any` with the only change that the range starts from `start + 1` to make place for one needed character:
+`range(start + 1, len(text) + 1)`.
+
 ## Match Sets of Characters
 
 > Add a new matching class that matches any character from a set, so that Charset('aeiou') matches any lower-case vowel.
 > Create a matcher that matches a range of characters. For example, Range("a", "z") matches any single lower-case Latin alphabetic character. (This is just a convenience matcher: ranges can always be spelled out in full.)
 > Write some tests for your matchers.
+
+`Charset` is simple, you just need to check if the next character is in the `Charset` and if so, if the rest matches the other patterns.
+
+`Range` can be built using `Charset` by spelling the range out. In fact, it can be a child class and the constructor can generate all characters in between, then `Charset` can take care of the rest.
 
 ## Exclusion
 

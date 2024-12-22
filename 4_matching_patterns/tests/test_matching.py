@@ -1,4 +1,4 @@
-from patterns import Lit, Any, Either, Plus
+from patterns import *
 
 def test_lit():
     assert Lit("abc").match("abc")
@@ -45,3 +45,13 @@ def test_plus():
     assert not Plus(Lit("abc")).match("abc")
     assert Plus(Lit("abc")).match("xabc")
     assert Plus(Lit("abc")).match("xyzabc")
+
+def test_charset():
+    assert Charset("abcd").match("a")
+    assert not Charset("abcd").match("x")
+    assert Charset("abcd", Any()).match("abc")
+
+def test_range():
+    assert Range("a", "d").match("a")
+    assert not Range("a", "d").match("x")
+    assert Range("a", "d", Any()).match("abc")
