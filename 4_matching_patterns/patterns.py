@@ -75,9 +75,12 @@ class Charset(Match):
         self.chars = tuple(chars)
 
     def _match(self, text, start):
+        if start >= len(text):
+            return None
         if text[start] in self.chars:
             return self.rest._match(text, start + 1)
         return None
+
 
 class Range(Charset):
     def __init__(self, first:str, last:str, rest=None):
@@ -85,3 +88,11 @@ class Range(Charset):
         chars = "".join(chr(c) for c in range(ord(first), ord(last) + 1))
         super().__init__(chars, rest)
 
+
+class Not(Match):
+    def __init__(self, pattern, rest=None):
+        super().__init__(rest)
+        self.pattern = pattern
+    
+    def _match(self, text, start):
+        return self.pattern._match(text, start) != len(text)

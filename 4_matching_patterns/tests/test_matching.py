@@ -55,3 +55,12 @@ def test_range():
     assert Range("a", "d").match("a")
     assert not Range("a", "d").match("x")
     assert Range("a", "d", Any()).match("abc")
+
+def test_not():
+    assert not Not(Lit("a")).match("a")
+    assert Not(Lit("a")).match("b")
+    assert Not(Plus().match(""))
+    assert Not(Charset("abc")).match("x")
+    assert Not(Range("a", "c")).match("x")
+    # assert Lit("abc", Not(Plus())).match("abc")
+    # assert Lit("abc", Not(Charset("abc"))).match("abcd")

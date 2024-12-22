@@ -34,6 +34,8 @@ This is basically the same as `Any` with the only change that the range starts f
 > Create a matcher that doesn’t match a specified pattern. For example, Not(Lit("abc")) only succeeds if the text isn’t “abc”.
 > Write some tests for it.
 
+This is simple for `Lit` but more complicated for other patterns, see failing tests in `test_not`.
+
 ## Make Repetition More Efficient
 
 > Rewrite Any so that it does not repeatedly re-match text.
