@@ -34,6 +34,7 @@ class Any(Match):
                 return end
         return None
     
+
 class Either(Match):
     def __init__(self, left: Lit, right: Lit, rest=None):
         super().__init__(rest)
@@ -54,3 +55,15 @@ class Null(Match):
 
     def _match(self, text, start):
         return start
+
+
+class Plus(Match):
+    def __init__(self, rest=None):
+        super().__init__(rest)
+
+    def _match(self, text, start):
+        for i in range(start + 1, len(text) + 1):
+            end = self.rest._match(text, i)
+            if end == len(text):
+                return end
+        return None

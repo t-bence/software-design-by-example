@@ -1,4 +1,4 @@
-from patterns import Lit, Any, Either
+from patterns import Lit, Any, Either, Plus
 
 def test_lit():
     assert Lit("abc").match("abc")
@@ -36,3 +36,12 @@ def test_either_followed_by_literal_no_match():
 def test_either_followed_by_literal_matches():
     # /{a,b}c{a,b}/ matches "aca"
     assert Either(Lit("a"), Lit("b"), Lit("c", Either(Lit("a"), Lit("b")))).match("aca")
+
+def test_plus():
+    assert Plus().match("a")
+    assert Plus().match("abc")
+    assert not Plus().match("")
+
+    assert not Plus(Lit("abc")).match("abc")
+    assert Plus(Lit("abc")).match("xabc")
+    assert Plus(Lit("abc")).match("xyzabc")
