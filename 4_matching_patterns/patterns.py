@@ -28,6 +28,8 @@ class Any(Match):
         super().__init__(rest)
 
     def _match(self, text, start):
+        if self.rest is Null:
+            return len(text)
         for i in range(start, len(text) + 1):
             end = self.rest._match(text, i)
             if end == len(text):

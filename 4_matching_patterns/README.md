@@ -40,6 +40,10 @@ This is simple for `Lit` but more complicated for other patterns, see failing te
 
 > Rewrite Any so that it does not repeatedly re-match text.
 
+I don't see currently how this could be done. With recursion perhaps?
+
+What I could come up with is to check if there are patterns following the `Any`, and if there is only a `Null`, then return a match immediately instead of looping.
+
 ## Multiple Alternatives
 
 > Modify Either so that it can match any number of sub-patterns, not just two.
