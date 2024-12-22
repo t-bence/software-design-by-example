@@ -1,0 +1,7 @@
+{
+    "python.testing.pytestArgs": [
+        "4_matching_patterns"
+    ],
+    "python.testing.unittestEnabled": false,
+    "python.testing.pytestEnabled": true
+}
