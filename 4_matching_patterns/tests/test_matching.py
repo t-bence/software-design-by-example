@@ -19,23 +19,23 @@ def test_any():
 
 def test_either_two_literals_first():
     # /{a,b}/ matches "a"
-    assert Either(Lit("a"), Lit("b")).match("a")
+    assert Either((Lit("a"), Lit("b"))).match("a")
 
 def test_either_two_literals_not_both():
     # /{a,b}/ doesn't match "ab"
-    assert not Either(Lit("a"), Lit("b")).match("ab")
+    assert not Either((Lit("a"), Lit("b"))).match("ab")
 
 def test_either_followed_by_literal_match():
     # /{a,b}c/ matches "ac"
-    assert Either(Lit("a"), Lit("b"), Lit("c")).match("ac")
+    assert Either((Lit("a"), Lit("b")), Lit("c")).match("ac")
 
 def test_either_followed_by_literal_no_match():
     # /{a,b}c/ doesn't match "ax"
-    assert not Either(Lit("a"), Lit("b"), Lit("c")).match("ax")
+    assert not Either((Lit("a"), Lit("b")), Lit("c")).match("ax")
 
 def test_either_followed_by_literal_matches():
     # /{a,b}c{a,b}/ matches "aca"
-    assert Either(Lit("a"), Lit("b"), Lit("c", Either(Lit("a"), Lit("b")))).match("aca")
+    assert Either((Lit("a"), Lit("b")), Lit("c", Either((Lit("a"), Lit("b"))))).match("aca")
 
 def test_plus():
     assert Plus().match("a")
@@ -64,3 +64,15 @@ def test_not():
     assert Not(Range("a", "c")).match("x")
     # assert Lit("abc", Not(Plus())).match("abc")
     # assert Lit("abc", Not(Charset("abc"))).match("abcd")
+
+def test_either_multiple():
+    # /{a,b,c}/ matches "a"
+    assert Either((Lit("a"), Lit("b"), Lit("c"))).match("a")
+    # /{a,b,c}/ doesn't match "ab"
+    assert not Either((Lit("a"), Lit("b"), Lit("c"))).match("ab")
+    # /{a,b,c}c/ matches "ac"
+    assert Either((Lit("a"), Lit("b"), Lit("c")), Lit("c")).match("ac")
+    # /{a,b,c}c/ doesn't match "ax"
+    assert not Either((Lit("a"), Lit("b"), Lit("c")), Lit("c")).match("ax")
+    # /{a,b}c{a,b}/ matches "aca"
+    assert Either((Lit("a"), Lit("b"), Lit("c")), Lit("c", Either((Lit("a"), Lit("b"), Lit("c"))))).match("aca")

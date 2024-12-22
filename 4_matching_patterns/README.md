@@ -50,6 +50,8 @@ What I could come up with is to check if there are patterns following the `Any`,
 > Write some tests for it.
 > What does your implementation do when no sub-patterns are specified?
 
+This is also quite simple.
+
 ## Returning Matches
 
 > Modify the matcher so that it returns the substrings that matched each part of the expression. For example, when *.txt matches name.txt, the library should return some indication that * matched the string "name".

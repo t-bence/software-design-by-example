@@ -38,14 +38,13 @@ class Any(Match):
     
 
 class Either(Match):
-    def __init__(self, left: Lit, right: Lit, rest=None):
+    def __init__(self, patterns, rest=None):
         super().__init__(rest)
-        self.left = left
-        self.right = right
+        self.patterns = patterns
 
     def _match(self, text: str, start:int=0):
-        for side in (self.left, self.right):
-            end = side._match(text, start)
+        for pattern in (self.patterns):
+            end = pattern._match(text, start)
             if end is not None:
                 return self.rest._match(text, end)
         return None
@@ -98,3 +97,7 @@ class Not(Match):
     
     def _match(self, text, start):
         return self.pattern._match(text, start) != len(text)
+
+
+if __name__ == "__main__":
+    Either(Lit("a"), Lit("b"), Lit("c")).match("ac")
