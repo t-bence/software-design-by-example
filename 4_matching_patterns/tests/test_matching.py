@@ -1,21 +1,20 @@
 from patterns import *
 
 def test_lit():
-    assert Lit("abc").match("abc")
+    assert PatternManager(Lit("abc")).match("abc")
 
-    assert not Lit("abc").match("def")
+    assert not PatternManager(Lit("abc")).match("def")
     
-    matcher = Lit("abc", Lit("def"))
-    assert matcher.match("abcdef")
+    assert PatternManager(Lit("abc"), Lit("def")).match("abcdef")
 
     # pytest.raises(Lit("abc").match, "def")
 
 def test_any():
-    assert Any().match("abc")
-    assert Any().match("")
+    assert PatternManager(Any()).match("abc")
+    assert PatternManager(Any()).match("")
 
-    assert Any(Lit("abc")).match("abc")
-    assert Any(Lit("abc")).match("xyzabc")
+    assert PatternManager(Any(), Lit("abc")).match("abc")
+    assert PatternManager(Any(), Lit("abc")).match("xyzabc")
 
 def test_either_two_literals_first():
     # /{a,b}/ matches "a"
