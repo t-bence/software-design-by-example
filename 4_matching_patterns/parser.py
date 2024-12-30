@@ -27,32 +27,25 @@ class Parser:
         return handler(front[1:], back)
 
     def _parse_EitherStart(self, rest, back):
-        children = []
-        while back and (back[0][0] == "Lit"):
-            children.append(Lit(back[0][1]))
-            back = back[1:]
+        lits = []
+        while back:
+            match back:
+                case [["Lit", chars], *rest]:
+                    lits.append(Lit(chars))
+                    back = rest
+                case [["EitherEnd"], *rest]:
+                    return Either(lits, self._parse(rest))
+                case _:
+                    raise ValueError("Badly-formatted Either")
 
-        if not children:
-            raise ValueError("empty Either")
-
-        if back[0][0] != "EitherEnd":
-            raise ValueError("badly-formatted Either")
-
-        return Either(children, self._parse(back[1:]))
-    
     def _parse_CharsetStart(self, rest, back):
-        negated = False
-        if back[0][0] == "Not":
-            negated = True
-            back = back[1:]
-        lit, chars = back[0]
-        if lit != "Lit" and back[1][0] != "CharsetEnd":
-            raise ValueError("badly-formatted Charset")
-
-        if negated:
-            return Not(Charset(chars, self._parse(back[2:])))
-        else:
-            return Charset(chars, self._parse(back[2:]))
+        match back:
+            case [["Not"], ["Lit", chars], ["CharsetEnd"], *rest]:
+                return Not(Charset(chars), self._parse(rest))
+            case [["Lit", chars], ["CharsetEnd"], *rest]:
+                return Charset(chars, self._parse(rest))
+            case _:
+                raise ValueError("badly-formatted Charset")
 
 if __name__ == "__main__":
-    Parser().parse("[!xyz]")
+    Parser().parse("{abc,def}")
