@@ -26,6 +26,7 @@ class Tokenizer:
                     case "}": self._add("EitherEnd")
                     case "[": self._add("CharsetStart")
                     case "]": self._add("CharsetEnd")
+                    case "!": self._add("Not")
                     case ch if ch in CHARS: self.current += ch
                     case "\\": self.escaped = True
                     case _: raise NotImplementedError(f"what is '{ch}'?")

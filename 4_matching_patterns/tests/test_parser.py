@@ -1,4 +1,4 @@
-from patterns import Any, Either, Lit, Null, Charset
+from patterns import Any, Either, Lit, Null, Charset, Not
 from parser import Parser
 
 
@@ -50,3 +50,7 @@ def test_parse_any_either_long():
 
 def test_parse_charset():
     assert Parser().parse("[abc]") == Charset("abc")
+
+def test_parse_not_charset():
+    assert Parser().parse("[!abc]") == Not(Charset("abc"))
+

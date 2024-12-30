@@ -1,5 +1,5 @@
 from tokenizer import Tokenizer
-from patterns import Any, Either, Lit, Null, Charset
+from patterns import Any, Either, Lit, Null, Charset, Not
 
 class Parser:
     def parse(self, text):
@@ -41,8 +41,18 @@ class Parser:
         return Either(children, self._parse(back[1:]))
     
     def _parse_CharsetStart(self, rest, back):
+        negated = False
+        if back[0][0] == "Not":
+            negated = True
+            back = back[1:]
         lit, chars = back[0]
         if lit != "Lit" and back[1][0] != "CharsetEnd":
             raise ValueError("badly-formatted Charset")
 
-        return Charset(chars, self._parse(back[2:]))
+        if negated:
+            return Not(Charset(chars, self._parse(back[2:])))
+        else:
+            return Charset(chars, self._parse(back[2:]))
+
+if __name__ == "__main__":
+    Parser().parse("[!xyz]")
