@@ -10,6 +10,11 @@ class Match(ABC):
 
     def _match(self, text, start):
         raise NotImplementedError()
+    
+    def __eq__(self, other):
+        return (other is not None and 
+                self.__class__ == other.__class__ and 
+                self.rest == other.rest)
 
 class Lit(Match):
     def __init__(self, chars, rest=None):
@@ -21,6 +26,11 @@ class Lit(Match):
         if text[start:end] != self.chars:
             return None
         return self.rest._match(text, end)
+    
+    def __eq__(self, other):
+        return super().__eq__(other) and (
+            self.chars == other.chars
+        )
 
 
 class Any(Match):
@@ -48,6 +58,11 @@ class Either(Match):
             if end is not None:
                 return self.rest._match(text, end)
         return None
+    
+    def __eq__(self, other):
+        return super().__eq__(other) and self.patterns.__eq__(
+            other.patterns
+        )
 
 
 class Null(Match):
