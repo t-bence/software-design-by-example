@@ -70,3 +70,14 @@ def test_tok_either_two_lit():
         ["Lit", "def"],
         ["EitherEnd"],
     ]
+
+def test_tok_escaped_asterisk():
+    assert Tokenizer().tok(r"\*") == [["Lit", "*"]]
+
+def test_tok_charset():
+    assert Tokenizer().tok(r"[abc]") == [
+        ["CharsetStart"],
+        ["Lit", "abc"],
+        ["CharsetEnd"],
+    ]
+    

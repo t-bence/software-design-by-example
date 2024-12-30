@@ -9,22 +9,26 @@ class Tokenizer:
     def _setup(self):
         self.result = []
         self.current = ""
+        self.escaped = False
 
     def tok(self, text):
         self._setup()
         for ch in text:
-            if ch == "*":
-                self._add("Any")
-            elif ch == "{":
-                self._add("EitherStart")
-            elif ch == ",":
-                self._add(None)
-            elif ch == "}":
-                self._add("EitherEnd")
-            elif ch in CHARS:
+            if self.escaped:
                 self.current += ch
+                self.escaped = False
             else:
-                raise NotImplementedError(f"what is '{ch}'?")
+                match ch:
+                    case "": self._add(None)
+                    case "*": self._add("Any")
+                    case "{": self._add("EitherStart")
+                    case ",": self._add(None)
+                    case "}": self._add("EitherEnd")
+                    case "[": self._add("CharsetStart")
+                    case "]": self._add("CharsetEnd")
+                    case ch if ch in CHARS: self.current += ch
+                    case "\\": self.escaped = True
+                    case _: raise NotImplementedError(f"what is '{ch}'?")
         self._add(None)
         return self.result
 

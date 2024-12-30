@@ -1,4 +1,4 @@
-from patterns import Any, Either, Lit, Null
+from patterns import Any, Either, Lit, Null, Charset
 from parser import Parser
 
 
@@ -47,3 +47,6 @@ def test_parse_any_either_long():
     assert Parser().parse("*{abc,def,ghi,jkl}") == Any(
         Either([Lit("abc"), Lit("def"), Lit("ghi"), Lit("jkl")])
     )
+
+def test_parse_charset():
+    assert Parser().parse("[abc]") == Charset("abc")

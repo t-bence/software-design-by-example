@@ -1,5 +1,5 @@
 from tokenizer import Tokenizer
-from patterns import Any, Either, Lit, Null
+from patterns import Any, Either, Lit, Null, Charset
 
 class Parser:
     def parse(self, text):
@@ -17,11 +17,12 @@ class Parser:
             return Null()
 
         front, back = tokens[0], tokens[1:]
-        if front[0] == "Any": handler = self._parse_Any
-        elif front[0] == "EitherStart": handler = self._parse_EitherStart
-        elif front[0] == "Lit": handler = self._parse_Lit
-        else:
-            assert False, f"Unknown token type {front}"
+        match front[0]:
+            case "Any": handler = self._parse_Any
+            case "EitherStart": handler = self._parse_EitherStart
+            case "Lit": handler = self._parse_Lit
+            case "CharsetStart": handler = self._parse_CharsetStart
+            case _: raise NotImplementedError(f"Unknown token type {front}")
 
         return handler(front[1:], back)
 
@@ -38,3 +39,10 @@ class Parser:
             raise ValueError("badly-formatted Either")
 
         return Either(children, self._parse(back[1:]))
+    
+    def _parse_CharsetStart(self, rest, back):
+        lit, chars = back[0]
+        if lit != "Lit" and back[1][0] != "CharsetEnd":
+            raise ValueError("badly-formatted Charset")
+
+        return Charset(chars, self._parse(back[2:]))
