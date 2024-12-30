@@ -97,7 +97,3 @@ class Not(Match):
     
     def _match(self, text, start):
         return self.pattern._match(text, start) != len(text)
-
-
-if __name__ == "__main__":
-    Either(Lit("a"), Lit("b"), Lit("c")).match("ac")

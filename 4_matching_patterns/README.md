@@ -58,8 +58,10 @@ This is also quite simple.
 
 This seems fairly straightforward. I think it would be enough to change every pattern to return the actual string, and then the condition in the base class to check if the whole text has been returned.
 
-Actually, it turns out I probably need to solve the very first task, to add a manager class with a list of matchers to solve this. So moving on there...
+Actually, it turns out I probably need to solve the very first task, to add a manager class with a list of matchers to solve this. I made an attempt at it but did not finish, it is on the feature/pattern-manager branch.
 
 ## Alternative Matching
 
 > The tool we have built implements lazy matching, i.e., the * character matches the shortest string it can that results in the overall pattern matching. Modify the code to do greedy matching instead, and combine it with the solution to the previous exercise for testing.
+
+Implementing greedy matching would be simple, I would just need to change the range in `Any` and `Plus` to go from max to min, but without returning the intermediate matches, I cannot test it properly. So it is not implemented.
