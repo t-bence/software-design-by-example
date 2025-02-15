@@ -18,9 +18,13 @@ So, it needs to create a `Charset` from whatever is between the square brackets.
 
 > Modify the parser so that [!abc] is interpreted as “match anything except one of those three characters”.
 
+I wrote this using pattern matching, which was very handy and natural here. I also re-implemented the whole `Either` parsing with pattern matching, which feels a bit forced, but let me learn more about it.
+
 ## Nested Lists
 
 > Write a function that accepts a string representing nested lists containing numbers and returns the actual list. For example, the input [1, [2, [3, 4], 5]] should produce the corresponding Python list.
+
+This I will do here in this folder.
 
 ## Simple Arithmetic
 
