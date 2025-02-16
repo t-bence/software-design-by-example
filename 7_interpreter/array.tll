@@ -1,0 +1,6 @@
+[
+    "seq",
+    ["set", "alpha", ["array", 10]],
+    ["array_set", "alpha", 2, 6],
+    ["add", ["array_get", "alpha", 1], ["array_get", "alpha", 2]]
+]
